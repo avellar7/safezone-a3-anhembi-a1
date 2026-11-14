@@ -1,10 +1,12 @@
 'use client'
 
 import { useState } from 'react'
-import { Eye, EyeOff, LogIn, ShieldCheck } from 'lucide-react'
+import { Contrast, Eye, EyeOff, LogIn, ShieldCheck } from 'lucide-react'
 import { Segmented } from '@/components/form-controls'
 import { FloatingField } from '@/components/signup/floating-field'
 import { emailValido } from '@/lib/masks'
+import { usePrefs } from '@/lib/prefs-context'
+import { cn } from '@/lib/utils'
 
 const perfis = [
   { id: 'morador', label: 'Sou morador' },
@@ -23,6 +25,7 @@ function GoogleLogo() {
 }
 
 export function LoginScreen({ onLogin, onCriarConta }) {
+  const { prefs, atualizar, t } = usePrefs()
   const [perfil, setPerfil] = useState('morador')
   const [email, setEmail] = useState('')
   const [senha, setSenha] = useState('')
@@ -63,11 +66,26 @@ export function LoginScreen({ onLogin, onCriarConta }) {
   return (
     <div className="flex min-h-screen flex-col bg-bg text-ink">
       <header className="bg-nav text-nav-fg shadow-md">
-        <div className="mx-auto flex h-16 max-w-6xl items-center gap-2.5 px-4 sm:px-6">
-          <span className="flex size-10 items-center justify-center rounded-full bg-nav-fg text-nav">
-            <ShieldCheck className="size-6" aria-hidden="true" />
-          </span>
-          <span className="text-xl font-extrabold tracking-tight">SafeZone</span>
+        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-2.5 px-4 sm:px-6">
+          <div className="flex items-center gap-2.5">
+            <span className="flex size-10 items-center justify-center rounded-full bg-nav-fg text-nav">
+              <ShieldCheck className="size-6" aria-hidden="true" />
+            </span>
+            <span className="text-xl font-extrabold tracking-tight">SafeZone</span>
+          </div>
+          <button
+            type="button"
+            onClick={() => atualizar({ altoContraste: !prefs.altoContraste })}
+            aria-pressed={prefs.altoContraste}
+            aria-label={t('contrast.toggle')}
+            title={t('contrast.toggle')}
+            className={cn(
+              'flex size-11 items-center justify-center rounded-full border-2 transition-colors',
+              prefs.altoContraste ? 'border-nav-fg bg-nav-fg text-nav' : 'border-white/50 text-nav-fg hover:bg-white/15',
+            )}
+          >
+            <Contrast className="size-5" aria-hidden="true" />
+          </button>
         </div>
       </header>
 
