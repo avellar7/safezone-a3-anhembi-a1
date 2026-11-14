@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import { Contrast, Menu, Settings2, ShieldCheck, UserPlus, X } from 'lucide-react'
+import { Contrast, LogOut, Menu, Settings2, ShieldCheck, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { usePrefs } from '@/lib/prefs-context'
 import { usuario } from '@/lib/mock-data'
@@ -13,7 +13,7 @@ const abas = [
   { id: 'claim', chave: 'tab.claim' },
 ]
 
-function AccountMenu({ onNavigate }) {
+function AccountMenu({ onNavigate, onLogout }) {
   const { t } = usePrefs()
   const [aberto, setAberto] = useState(false)
   const raiz = useRef(null)
@@ -66,11 +66,14 @@ function AccountMenu({ onNavigate }) {
           </button>
           <button
             type="button"
-            onClick={() => ir('signup')}
+            onClick={() => {
+              setAberto(false)
+              onLogout()
+            }}
             className="flex min-h-12 w-full items-center gap-3 rounded-xl px-3 text-left text-base font-semibold hover:bg-brand-soft"
           >
-            <UserPlus className="size-5" aria-hidden="true" />
-            {t('menu.signup')}
+            <LogOut className="size-5" aria-hidden="true" />
+            {t('menu.logout')}
           </button>
         </div>
       )}
@@ -78,7 +81,7 @@ function AccountMenu({ onNavigate }) {
   )
 }
 
-export function Navbar({ view, onNavigate }) {
+export function Navbar({ view, onNavigate, onLogout }) {
   const { prefs, atualizar, t } = usePrefs()
   const [menuAberto, setMenuAberto] = useState(false)
 
@@ -133,7 +136,7 @@ export function Navbar({ view, onNavigate }) {
           >
             <Contrast className="size-5" aria-hidden="true" />
           </button>
-          <AccountMenu onNavigate={ir} />
+          <AccountMenu onNavigate={ir} onLogout={onLogout} />
           <button
             type="button"
             onClick={() => setMenuAberto((v) => !v)}

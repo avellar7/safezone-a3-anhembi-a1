@@ -5,6 +5,7 @@ import { ClaimPage } from '@/components/claim-page'
 import { ConnectionStatusBar } from '@/components/connection-status-bar'
 import { CriticalAlertTakeover } from '@/components/critical-alert-takeover'
 import { ForecastPage } from '@/components/forecast-page'
+import { LoginScreen } from '@/components/login-screen'
 import { MapPage } from '@/components/map-page'
 import { Navbar } from '@/components/navbar'
 import { Overview } from '@/components/overview'
@@ -17,7 +18,7 @@ function horaAgora() {
   return new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
 }
 
-export function SafeZoneApp() {
+function Dashboard({ onLogout }) {
   const [view, setView] = useState('overview')
   const [chamado, setChamado] = useState(chamadoInicial)
   const [seguro, setSeguro] = useState(false)
@@ -31,20 +32,17 @@ export function SafeZoneApp() {
     window.scrollTo({ top: 0 })
   }, [])
 
-  const abrirChamado = useCallback(
-    ({ descricao, localizacao }) => {
-      const hora = horaAgora()
-      const protocolo = `#${Math.floor(1000 + Math.random() * 9000)}`
-      setChamado({ protocolo, descricao, localizacao, aberto_em: hora, etapaAtual: 0, horarios: [hora, null, null] })
-      return protocolo
-    },
-    [],
-  )
+  const abrirChamado = useCallback(({ descricao, localizacao }) => {
+    const hora = horaAgora()
+    const protocolo = `#${Math.floor(1000 + Math.random() * 9000)}`
+    setChamado({ protocolo, descricao, localizacao, aberto_em: hora, etapaAtual: 0, horarios: [hora, null, null] })
+    return protocolo
+  }, [])
 
   return (
     <div className="min-h-screen bg-bg text-ink">
       <ConnectionStatusBar />
-      <Navbar view={view} onNavigate={navegar} />
+      <Navbar view={view} onNavigate={navegar} onLogout={onLogout} />
 
       <main className="mx-auto max-w-6xl px-4 pb-32 pt-28 sm:px-6">
         {view === 'overview' && (
@@ -64,7 +62,6 @@ export function SafeZoneApp() {
           <ClaimPage chamado={chamado} onCancelar={() => setChamado(null)} onAbrirSOS={() => document.querySelector('[data-sos]')?.click()} />
         )}
         {view === 'prefs' && <PreferencesPage />}
-        {view === 'signup' && <SignupFlow onFinish={() => navegar('overview')} />}
       </main>
 
       <SOSButton onSubmit={abrirChamado} onVerChamado={() => navegar('claim')} />
@@ -86,4 +83,27 @@ export function SafeZoneApp() {
       )}
     </div>
   )
+}
+
+export function SafeZoneApp() {
+  const [currentScreen, setCurrentScreen] = useState('login')
+
+  const irPara = useCallback((tela) => {
+    setCurrentScreen(tela)
+    window.scrollTo({ top: 0 })
+  }, [])
+
+  if (currentScreen === 'signup') {
+    return (
+      <main className="min-h-screen bg-bg px-4 py-10 text-ink sm:px-6">
+        <SignupFlow onFinish={() => irPara('dashboard')} onVoltarLogin={() => irPara('login')} />
+      </main>
+    )
+  }
+
+  if (currentScreen === 'dashboard') {
+    return <Dashboard onLogout={() => irPara('login')} />
+  }
+
+  return <LoginScreen onLogin={() => irPara('dashboard')} onCriarConta={() => irPara('signup')} />
 }

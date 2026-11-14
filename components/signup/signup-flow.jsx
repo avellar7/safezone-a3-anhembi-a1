@@ -88,7 +88,7 @@ function Progresso({ passo }) {
   )
 }
 
-export function SignupFlow({ onFinish }) {
+export function SignupFlow({ onFinish, onVoltarLogin }) {
   const [passo, setPasso] = useState(1)
   const [dados, setDados] = useState(dadosIniciais)
   const [tocados, setTocados] = useState({})
@@ -205,9 +205,9 @@ export function SignupFlow({ onFinish }) {
 
       <p className="mt-5 text-center text-base text-ink2">
         Já tem conta?{' '}
-        <a href="#entrar" className="font-bold text-ink underline underline-offset-4">
+        <button type="button" onClick={onVoltarLogin} className="font-bold text-ink underline underline-offset-4">
           Entrar
-        </a>
+        </button>
       </p>
     </div>
   )
