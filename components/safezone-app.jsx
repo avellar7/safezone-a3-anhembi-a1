@@ -4,7 +4,8 @@ import { useCallback, useState } from 'react'
 import { ClaimPage } from '@/components/claim-page'
 import { ConnectionStatusBar } from '@/components/connection-status-bar'
 import { CriticalAlertTakeover } from '@/components/critical-alert-takeover'
-import { ForecastPage } from '@/components/forecast-page'
+import { AgentApp } from '@/components/agent/agent-app'
+import { AIForecastPage } from '@/components/ai-forecast-page'
 import { LoginScreen } from '@/components/login-screen'
 import { MapPage } from '@/components/map-page'
 import { Navbar } from '@/components/navbar'
@@ -57,7 +58,7 @@ function Dashboard({ onLogout }) {
           />
         )}
         {view === 'map' && <MapPage />}
-        {view === 'forecast' && <ForecastPage />}
+        {view === 'forecast' && <AIForecastPage perfil="morador" />}
         {view === 'claim' && (
           <ClaimPage chamado={chamado} onCancelar={() => setChamado(null)} onAbrirSOS={() => document.querySelector('[data-sos]')?.click()} />
         )}
@@ -93,6 +94,10 @@ export function SafeZoneApp() {
     window.scrollTo({ top: 0 })
   }, [])
 
+  if (currentScreen === 'agent') {
+    return <AgentApp onLogout={() => irPara('login')} />
+  }
+
   if (currentScreen === 'signup') {
     return (
       <main className="min-h-screen bg-bg px-4 py-10 text-ink sm:px-6">
@@ -105,5 +110,10 @@ export function SafeZoneApp() {
     return <Dashboard onLogout={() => irPara('login')} />
   }
 
-  return <LoginScreen onLogin={() => irPara('dashboard')} onCriarConta={() => irPara('signup')} />
+  return (
+    <LoginScreen
+      onLogin={({ perfil }) => irPara(perfil === 'agente' ? 'agent' : 'dashboard')}
+      onCriarConta={() => irPara('signup')}
+    />
+  )
 }

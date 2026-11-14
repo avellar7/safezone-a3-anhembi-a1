@@ -2,7 +2,7 @@ import { ChevronRight } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { severidades } from '@/lib/severity'
 
-export function MetricCard({ rotulo, valor, legenda, Icon, tom, onClick, acao }) {
+export function MetricCard({ rotulo, valor, legenda, Icon, tom, onClick, acao, destaque }) {
   const sev = severidades[tom]
   const Raiz = onClick ? 'button' : 'div'
 
@@ -11,7 +11,8 @@ export function MetricCard({ rotulo, valor, legenda, Icon, tom, onClick, acao })
       type={onClick ? 'button' : undefined}
       onClick={onClick}
       className={cn(
-        'flex min-h-28 items-center gap-4 rounded-2xl border-2 border-line bg-surface p-4 text-left text-ink',
+        'flex min-h-28 items-center gap-4 rounded-2xl border-2 bg-surface p-4 text-left text-ink',
+        destaque ? cn('border-2', sev.badge.split(' ').find((c) => c.startsWith('border-'))) : 'border-line',
         onClick && 'transition-colors hover:border-line-strong',
       )}
     >

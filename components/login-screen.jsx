@@ -2,8 +2,14 @@
 
 import { useState } from 'react'
 import { Eye, EyeOff, LogIn, ShieldCheck } from 'lucide-react'
+import { Segmented } from '@/components/form-controls'
 import { FloatingField } from '@/components/signup/floating-field'
 import { emailValido } from '@/lib/masks'
+
+const perfis = [
+  { id: 'morador', label: 'Sou morador' },
+  { id: 'agente', label: 'Sou agente' },
+]
 
 function GoogleLogo() {
   return (
@@ -17,6 +23,7 @@ function GoogleLogo() {
 }
 
 export function LoginScreen({ onLogin, onCriarConta }) {
+  const [perfil, setPerfil] = useState('morador')
   const [email, setEmail] = useState('')
   const [senha, setSenha] = useState('')
   const [mostrar, setMostrar] = useState(false)
@@ -33,12 +40,12 @@ export function LoginScreen({ onLogin, onCriarConta }) {
       return
     }
     setEnviando(true)
-    setTimeout(() => onLogin({ email }), 600)
+    setTimeout(() => onLogin({ email, perfil }), 600)
   }
 
   const entrarComGoogle = () => {
     setEnviando(true)
-    setTimeout(() => onLogin({ email: 'ryan.silva@email.com' }), 600)
+    setTimeout(() => onLogin({ email: 'ryan.silva@email.com', perfil }), 600)
   }
 
   const toggle = (
@@ -76,6 +83,8 @@ export function LoginScreen({ onLogin, onCriarConta }) {
             noValidate
             className="flex flex-col gap-4 rounded-2xl border-2 border-line bg-surface p-4 sm:p-6"
           >
+            <Segmented legend="Entrar como" name="perfil" value={perfil} onChange={setPerfil} options={perfis} />
+
             <button
               type="button"
               onClick={entrarComGoogle}
