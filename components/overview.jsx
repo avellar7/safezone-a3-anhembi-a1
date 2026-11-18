@@ -1,54 +1,71 @@
-import { AlertCircle, Home, LifeBuoy } from 'lucide-react'
-import { AlertBanner } from '@/components/alert-banner'
+import { Home, LifeBuoy, TriangleAlert } from 'lucide-react'
 import { AlertList } from '@/components/alert-list'
+import { CriticalAlertCard } from '@/components/critical-alert-card'
 import { MetricCard } from '@/components/metric-card'
 import { RiskMap } from '@/components/risk-map'
-import { abrigos, alertas, pedidoAjuda } from '@/lib/mock-data'
+import { abrigos, etapasChamado } from '@/lib/mock-data'
+import { severidades } from '@/lib/severity'
 
-const contagem = (nivel) => alertas.filter((a) => a.nivel_severidade === nivel).length
-
-export function Overview({ evacuacaoConfirmada, onConfirmar, onVerRota }) {
-  const alertaCritico = alertas.find((a) => a.nivel_severidade === 'critico')
+export function Overview({ alertas, chamado, seguro, onRota, onSeguro, onDesfazerSeguro, onVerChamado }) {
+  const ativos = alertas.filter((a) => a.status === 'ativo')
+  const critico = ativos.find((a) => a.nivel_severidade === 'critico')
   const abrigo = abrigos.find((a) => a.recomendado)
 
-  return (
-    <div className="flex flex-col gap-6">
-      <AlertBanner
-        alerta={alertaCritico}
-        evacuacaoConfirmada={evacuacaoConfirmada}
-        onConfirmar={onConfirmar}
-        onVerRota={onVerRota}
-      />
+  const resumo = ['critico', 'alto', 'medio', 'info']
+    .map((n) => ({ n, qtd: ativos.filter((a) => a.nivel_severidade === n).length }))
+    .filter((x) => x.qtd > 0)
+    .map((x) => `${x.qtd} ${severidades[x.n].label.toLowerCase()}`)
+    .join(' · ')
 
-      <div className="grid gap-4 md:grid-cols-3 md:gap-6">
+  return (
+    <div className="flex flex-col gap-5">
+      <div>
+        <h1 className="text-3xl font-extrabold">Visão geral</h1>
+        <p className="text-base text-ink2">São Paulo, SP · sua região agora</p>
+      </div>
+
+      {critico && (
+        <CriticalAlertCard
+          alerta={critico}
+          abrigo={abrigo}
+          seguro={seguro}
+          onRota={onRota}
+          onSeguro={onSeguro}
+          onDesfazer={onDesfazerSeguro}
+        />
+      )}
+
+      <div className="grid gap-3 md:grid-cols-3 md:gap-4">
         <MetricCard
-          rotulo="ALERTAS NA REGIÃO"
-          valor={alertas.length}
-          legenda={`${contagem('critico')} crítico · ${contagem('alto')} alto · ${contagem('medio')} médio`}
-          icone={AlertCircle}
-          corIcone="bg-rose-100 text-rose-600"
+          rotulo="Alertas na região"
+          valor={ativos.length}
+          legenda={resumo || 'Nenhum alerta ativo'}
+          Icon={TriangleAlert}
+          tom={critico ? 'critico' : 'seguro'}
         />
         <MetricCard
-          rotulo="ABRIGO RECOMENDADO"
+          rotulo="Abrigo recomendado"
           valor={`${abrigo.tempoMin} min`}
           legenda={`${abrigo.nome} · ${abrigo.distanciaKm.toString().replace('.', ',')} km`}
-          icone={Home}
-          corIcone="bg-emerald-100 text-emerald-600"
+          Icon={Home}
+          tom="seguro"
         />
         <MetricCard
-          rotulo="CHAMADO EM ANDAMENTO"
-          valor={pedidoAjuda.protocolo}
-          legenda={pedidoAjuda.status}
-          icone={LifeBuoy}
-          corIcone="bg-violet-100 text-violet-600"
+          rotulo="Chamado em andamento"
+          valor={chamado ? chamado.protocolo : 'Nenhum'}
+          legenda={chamado ? etapasChamado[chamado.etapaAtual].titulo : 'Use o botão SOS se precisar'}
+          Icon={LifeBuoy}
+          tom="info"
+          onClick={chamado ? onVerChamado : undefined}
+          acao="Ver detalhes do chamado"
         />
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-3">
-        <div className="lg:col-span-2">
-          <RiskMap />
+      <div className="grid gap-5 lg:grid-cols-3">
+        <div className="order-2 lg:order-none lg:col-span-2">
+          <RiskMap titulo="Mapa de riscos" />
         </div>
-        <div className="lg:col-span-1">
+        <div className="order-1 lg:order-none">
           <AlertList alertas={alertas} />
         </div>
       </div>

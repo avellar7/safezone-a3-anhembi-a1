@@ -1,16 +1,35 @@
+import { ChevronRight } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { severidades } from '@/lib/severity'
 
-export function MetricCard({ rotulo, valor, legenda, icone: Icone, corIcone }) {
+export function MetricCard({ rotulo, valor, legenda, Icon, tom, onClick, acao, destaque }) {
+  const sev = severidades[tom]
+  const Raiz = onClick ? 'button' : 'div'
+
   return (
-    <article className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-100 sm:p-6">
-      <div className="flex items-start justify-between gap-3">
-        <h2 className="text-xs font-semibold tracking-[0.12em] text-slate-500">{rotulo}</h2>
-        <span className={cn('flex size-9 shrink-0 items-center justify-center rounded-full', corIcone)}>
-          <Icone className="size-[18px]" aria-hidden="true" />
+    <Raiz
+      type={onClick ? 'button' : undefined}
+      onClick={onClick}
+      className={cn(
+        'flex min-h-28 items-center gap-4 rounded-2xl border-2 bg-surface p-4 text-left text-ink',
+        destaque ? cn('border-2', sev.badge.split(' ').find((c) => c.startsWith('border-'))) : 'border-line',
+        onClick && 'transition-colors hover:border-line-strong',
+      )}
+    >
+      <span className={cn('flex size-14 shrink-0 items-center justify-center rounded-xl border-l-4', sev.badge)}>
+        <Icon className="size-7" aria-hidden="true" />
+      </span>
+      <span className="min-w-0 flex-1">
+        <span className="block text-sm font-bold uppercase tracking-wide text-ink2">{rotulo}</span>
+        <span className="block text-3xl font-extrabold leading-tight">{valor}</span>
+        <span className="block text-base font-medium text-ink2">{legenda}</span>
+      </span>
+      {onClick && (
+        <span className="flex shrink-0 items-center text-sm font-bold text-ink2">
+          <span className="sr-only">{acao}</span>
+          <ChevronRight className="size-6" aria-hidden="true" />
         </span>
-      </div>
-      <p className="mt-3 text-4xl font-bold tracking-tight text-slate-900">{valor}</p>
-      <p className="mt-1 text-sm text-slate-500">{legenda}</p>
-    </article>
+      )}
+    </Raiz>
   )
 }

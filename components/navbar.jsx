@@ -1,75 +1,121 @@
 'use client'
 
-import { useState } from 'react'
-import { Menu, ShieldCheck, X } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
+import { Contrast, LogOut, Menu, Settings2, ShieldCheck, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { abas, usuario } from '@/lib/mock-data'
+import { usePrefs } from '@/lib/prefs-context'
+import { usuario } from '@/lib/mock-data'
 
-function UserBlock({ className }) {
+const abas = [
+  { id: 'overview', chave: 'tab.overview' },
+  { id: 'map', chave: 'tab.map' },
+  { id: 'forecast', chave: 'tab.forecast' },
+  { id: 'claim', chave: 'tab.claim' },
+]
+
+function AccountMenu({ onNavigate, onLogout }) {
+  const { t } = usePrefs()
+  const [aberto, setAberto] = useState(false)
+  const raiz = useRef(null)
+
+  useEffect(() => {
+    if (!aberto) return
+    const fechar = (e) => {
+      if (e.type === 'keydown' && e.key !== 'Escape') return
+      if (e.type === 'mousedown' && raiz.current?.contains(e.target)) return
+      setAberto(false)
+    }
+    document.addEventListener('mousedown', fechar)
+    document.addEventListener('keydown', fechar)
+    return () => {
+      document.removeEventListener('mousedown', fechar)
+      document.removeEventListener('keydown', fechar)
+    }
+  }, [aberto])
+
+  const ir = (id) => {
+    setAberto(false)
+    onNavigate(id)
+  }
+
   return (
-    <div className={cn('flex items-center gap-3', className)}>
-      <div className="hidden text-right sm:block">
-        <p className="text-sm font-semibold leading-tight text-slate-900">{usuario.nome}</p>
-        <p className="flex items-center justify-end gap-1.5 text-xs font-medium text-emerald-600">
-          <span className="relative flex size-1.5">
-            <span className="absolute inline-flex size-full animate-ping rounded-full bg-emerald-500 opacity-60" />
-            <span className="relative inline-flex size-1.5 rounded-full bg-emerald-500" />
-          </span>
-          {usuario.status}
-        </p>
-      </div>
-      <div
-        className="flex size-10 items-center justify-center rounded-full bg-petrol text-sm font-bold text-white ring-2 ring-white"
-        aria-label={`Avatar de ${usuario.nome}`}
+    <div ref={raiz} className="relative">
+      <button
+        type="button"
+        onClick={() => setAberto((v) => !v)}
+        aria-expanded={aberto}
+        aria-haspopup="true"
+        aria-label={`${t('menu.account')}: ${usuario.nome}`}
+        className="flex size-11 items-center justify-center rounded-full bg-nav-fg text-sm font-extrabold text-nav"
       >
         {usuario.iniciais}
-      </div>
+      </button>
+      {aberto && (
+        <div className="absolute right-0 top-13 z-10 w-64 rounded-2xl border-2 border-line-strong bg-surface p-2 text-ink shadow-xl">
+          <div className="px-3 py-2">
+            <p className="text-base font-bold">{usuario.nome}</p>
+            <p className="truncate text-sm text-ink2">{usuario.email}</p>
+          </div>
+          <button
+            type="button"
+            onClick={() => ir('prefs')}
+            className="flex min-h-12 w-full items-center gap-3 rounded-xl px-3 text-left text-base font-semibold hover:bg-brand-soft"
+          >
+            <Settings2 className="size-5" aria-hidden="true" />
+            {t('menu.prefs')}
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setAberto(false)
+              onLogout()
+            }}
+            className="flex min-h-12 w-full items-center gap-3 rounded-xl px-3 text-left text-base font-semibold hover:bg-brand-soft"
+          >
+            <LogOut className="size-5" aria-hidden="true" />
+            {t('menu.logout')}
+          </button>
+        </div>
+      )}
     </div>
   )
 }
 
-export function Navbar({ abaAtiva, onChange }) {
+export function Navbar({ view, onNavigate, onLogout }) {
+  const { prefs, atualizar, t } = usePrefs()
   const [menuAberto, setMenuAberto] = useState(false)
 
-  function selecionar(id) {
-    onChange(id)
+  const ir = (id) => {
     setMenuAberto(false)
+    onNavigate(id)
   }
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 bg-white shadow-sm">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:h-[72px]">
-        <div className="flex items-center gap-6 xl:gap-8">
-          <a href="#" onClick={(e) => { e.preventDefault(); selecionar('visao-geral') }} className="flex shrink-0 items-center gap-3">
-            <span className="flex size-10 items-center justify-center rounded-full bg-petrol text-white">
-              <ShieldCheck className="size-5" aria-hidden="true" />
+    <header className="fixed inset-x-0 top-8 z-50 bg-nav text-nav-fg shadow-md">
+      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-3 px-4 sm:px-6">
+        <div className="flex items-center gap-6">
+          <button type="button" onClick={() => ir('overview')} className="flex min-h-11 items-center gap-2.5 rounded-lg">
+            <span className="flex size-10 items-center justify-center rounded-full bg-nav-fg text-nav">
+              <ShieldCheck className="size-6" aria-hidden="true" />
             </span>
-            <span className="flex flex-col leading-none">
-              <span className="text-lg font-bold tracking-tight text-slate-900">SafeZone</span>
-              <span className="mt-1 text-[10px] font-semibold tracking-[0.14em] text-slate-400">
-                DEFESA &amp; EMERGÊNCIA
-              </span>
-            </span>
-          </a>
+            <span className="text-xl font-extrabold tracking-tight">SafeZone</span>
+          </button>
 
-          <nav aria-label="Navegação principal" className="hidden items-center gap-1 lg:flex">
+          <nav aria-label="Principal" className="hidden items-center gap-1 lg:flex">
             {abas.map((aba) => {
-              const ativa = aba.id === abaAtiva
+              const ativa = aba.id === view
               return (
                 <button
                   key={aba.id}
                   type="button"
-                  onClick={() => selecionar(aba.id)}
+                  onClick={() => ir(aba.id)}
                   aria-current={ativa ? 'page' : undefined}
                   className={cn(
-                    'rounded-xl px-4 py-2 text-left transition-colors',
-                    ativa ? 'bg-slate-900 text-white' : 'text-slate-900 hover:bg-slate-100',
+                    'min-h-11 rounded-xl px-4 text-base font-bold transition-colors',
+                    ativa ? 'bg-nav-fg text-nav' : 'text-nav-fg hover:bg-white/15',
                   )}
                 >
-                  <span className="block text-sm font-bold leading-tight">{aba.titulo}</span>
-                  <span className={cn('block text-xs leading-tight', ativa ? 'text-slate-300' : 'text-slate-500')}>
-                    {aba.subtitulo}
-                  </span>
+                  {t(aba.chave)}
                 </button>
               )
             })}
@@ -77,38 +123,50 @@ export function Navbar({ abaAtiva, onChange }) {
         </div>
 
         <div className="flex items-center gap-2">
-          <UserBlock />
+          <button
+            type="button"
+            onClick={() => atualizar({ altoContraste: !prefs.altoContraste })}
+            aria-pressed={prefs.altoContraste}
+            aria-label={t('contrast.toggle')}
+            title={t('contrast.toggle')}
+            className={cn(
+              'flex size-11 items-center justify-center rounded-full border-2 transition-colors',
+              prefs.altoContraste ? 'border-nav-fg bg-nav-fg text-nav' : 'border-white/50 text-nav-fg hover:bg-white/15',
+            )}
+          >
+            <Contrast className="size-5" aria-hidden="true" />
+          </button>
+          <AccountMenu onNavigate={ir} onLogout={onLogout} />
           <button
             type="button"
             onClick={() => setMenuAberto((v) => !v)}
             aria-expanded={menuAberto}
             aria-controls="menu-mobile"
-            aria-label={menuAberto ? 'Fechar menu' : 'Abrir menu'}
-            className="ml-1 flex size-10 items-center justify-center rounded-xl text-slate-700 hover:bg-slate-100 lg:hidden"
+            aria-label={menuAberto ? t('menu.close') : t('menu.open')}
+            className="flex size-11 items-center justify-center rounded-xl hover:bg-white/15 lg:hidden"
           >
-            {menuAberto ? <X className="size-5" /> : <Menu className="size-5" />}
+            {menuAberto ? <X className="size-6" aria-hidden="true" /> : <Menu className="size-6" aria-hidden="true" />}
           </button>
         </div>
       </div>
 
       {menuAberto && (
-        <nav id="menu-mobile" aria-label="Navegação principal" className="border-t border-slate-100 bg-white px-4 pb-4 pt-2 shadow-md lg:hidden">
+        <nav id="menu-mobile" aria-label="Principal" className="border-t border-white/20 bg-nav px-4 pb-4 pt-2 lg:hidden">
           <ul className="flex flex-col gap-1">
             {abas.map((aba) => {
-              const ativa = aba.id === abaAtiva
+              const ativa = aba.id === view
               return (
                 <li key={aba.id}>
                   <button
                     type="button"
-                    onClick={() => selecionar(aba.id)}
+                    onClick={() => ir(aba.id)}
                     aria-current={ativa ? 'page' : undefined}
                     className={cn(
-                      'w-full rounded-xl px-4 py-3 text-left',
-                      ativa ? 'bg-slate-900 text-white' : 'text-slate-900 hover:bg-slate-100',
+                      'min-h-12 w-full rounded-xl px-4 text-left text-lg font-bold',
+                      ativa ? 'bg-nav-fg text-nav' : 'text-nav-fg hover:bg-white/15',
                     )}
                   >
-                    <span className="block text-sm font-bold">{aba.titulo}</span>
-                    <span className={cn('block text-xs', ativa ? 'text-slate-300' : 'text-slate-500')}>{aba.subtitulo}</span>
+                    {t(aba.chave)}
                   </button>
                 </li>
               )
