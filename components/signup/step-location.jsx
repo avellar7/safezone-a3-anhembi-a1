@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { CircleCheck, Info, LocateFixed } from 'lucide-react'
 import { FloatingField } from '@/components/signup/floating-field'
+import { PetToggleFields } from '@/components/pet-toggle-fields'
 import { enderecosMock } from '@/lib/mock-data'
 import { maskCep, maskCnpj, maskTelefone } from '@/lib/masks'
 
@@ -86,6 +87,19 @@ function ResidentFields({ form }) {
 
       <FloatingField id="bairro" label="Bairro" autoComplete="off" {...form.props('bairro')} />
       <FloatingField id="cep" label="CEP" inputMode="numeric" autoComplete="postal-code" {...form.props('cep', maskCep)} />
+
+      <fieldset className="flex flex-col gap-2">
+        <legend className="mb-1 text-lg font-extrabold">
+          Tem animais de estimação em casa? <span className="text-sm font-semibold text-ink2">(opcional)</span>
+        </legend>
+        <PetToggleFields
+          id="cadastro-pets"
+          label="Sim, tenho pet(s)"
+          hint="Ajuda a Defesa Civil a indicar abrigos que aceitam animais."
+          value={form.dados.pets}
+          onChange={(v) => form.set('pets', v)}
+        />
+      </fieldset>
     </div>
   )
 }

@@ -1,8 +1,10 @@
 import { CircleCheck, MapPin, Radio, Route, ShieldCheck } from 'lucide-react'
 import { AlertBadge } from '@/components/alert-badge'
+import { MapsRedirectButton } from '@/components/maps-redirect-button'
+import { areaRiscoCoords } from '@/lib/mock-data'
 import { tempoAtras } from '@/lib/format'
 
-export function CriticalAlertCard({ alerta, abrigo, seguro, onRota, onSeguro, onDesfazer }) {
+export function CriticalAlertCard({ alerta, abrigo, seguro, onSeguro, onDesfazer }) {
   return (
     <section aria-labelledby="alerta-critico" className="overflow-hidden rounded-2xl border-2 border-crit bg-crit-soft text-ink">
       <div className="flex flex-col gap-4 p-4 sm:p-6">
@@ -48,14 +50,15 @@ export function CriticalAlertCard({ alerta, abrigo, seguro, onRota, onSeguro, on
           </div>
         ) : (
           <div className="flex flex-col gap-3 sm:flex-row">
-            <button
-              type="button"
-              onClick={onRota}
-              className="flex min-h-14 flex-1 items-center justify-center gap-2 rounded-xl bg-brand px-5 text-lg font-extrabold text-brand-fg"
+            <MapsRedirectButton
+              variante="primario"
+              Icon={Route}
+              coords={abrigo?.coords ?? areaRiscoCoords}
+              destinoNome={abrigo?.nome}
+              className="flex-1"
             >
-              <Route className="size-5" aria-hidden="true" />
               Ver rota de evacuação
-            </button>
+            </MapsRedirectButton>
             <button
               type="button"
               onClick={onSeguro}

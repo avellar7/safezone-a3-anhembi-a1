@@ -13,6 +13,7 @@ import { Overview } from '@/components/overview'
 import { PreferencesPage } from '@/components/preferences-page'
 import { SOSButton } from '@/components/sos-button'
 import { SignupFlow } from '@/components/signup/signup-flow'
+import { resumoPets } from '@/components/pet-toggle-fields'
 import { abrigos, alertas, chamadoInicial } from '@/lib/mock-data'
 
 function horaAgora() {
@@ -33,12 +34,28 @@ function Dashboard({ onLogout }) {
     window.scrollTo({ top: 0 })
   }, [])
 
-  const abrirChamado = useCallback(({ descricao, localizacao }) => {
+  const abrirChamado = useCallback(({ tipo, descricao, localizacao, pets }) => {
     const hora = horaAgora()
     const protocolo = `#${Math.floor(1000 + Math.random() * 9000)}`
-    setChamado({ protocolo, descricao, localizacao, aberto_em: hora, etapaAtual: 0, horarios: [hora, null, null] })
+    if (tipo === 'seguro') {
+      setSeguro(true)
+      return protocolo
+    }
+    const petsTexto = resumoPets(pets)
+    setChamado({
+      protocolo,
+      tipo,
+      pets,
+      descricao: petsTexto ? `${descricao} · Com ${petsTexto}` : descricao,
+      localizacao,
+      aberto_em: hora,
+      etapaAtual: 0,
+      horarios: [hora, null, null],
+    })
     return protocolo
   }, [])
+
+  const pedidosAtivos = chamado && chamado.etapaAtual < 2 ? 1 : 0
 
   return (
     <div className="min-h-screen bg-bg text-ink">
@@ -51,7 +68,6 @@ function Dashboard({ onLogout }) {
             alertas={alertas}
             chamado={chamado}
             seguro={seguro}
-            onRota={() => navegar('map')}
             onSeguro={() => setSeguro(true)}
             onDesfazerSeguro={() => setSeguro(false)}
             onVerChamado={() => navegar('claim')}
@@ -65,16 +81,13 @@ function Dashboard({ onLogout }) {
         {view === 'prefs' && <PreferencesPage />}
       </main>
 
-      <SOSButton onSubmit={abrirChamado} onVerChamado={() => navegar('claim')} />
+      <SOSButton onSubmit={abrirChamado} onVerChamado={() => navegar('claim')} pedidosAtivos={pedidosAtivos} />
 
       {takeoverAberto && alertaCritico && !seguro && (
         <CriticalAlertTakeover
           alerta={alertaCritico}
           abrigo={abrigo}
-          onRota={() => {
-            setTakeoverAberto(false)
-            navegar('map')
-          }}
+          onRota={() => setTakeoverAberto(false)}
           onSeguro={() => {
             setSeguro(true)
             setTakeoverAberto(false)

@@ -7,6 +7,7 @@ import { StepProfile } from '@/components/signup/step-profile'
 import { StepAccount } from '@/components/signup/step-account'
 import { StepLocation } from '@/components/signup/step-location'
 import { StepReview } from '@/components/signup/step-review'
+import { petsVazio } from '@/lib/mock-data'
 import { cnpjValido, cpfValido, emailValido, maskCep, maskCpf, maskTelefone, onlyDigits, telefoneValido } from '@/lib/masks'
 
 const dadosIniciais = {
@@ -21,6 +22,7 @@ const dadosIniciais = {
   bairro: '',
   cep: '',
   usouGps: false,
+  pets: petsVazio,
   orgao: '',
   cnpj: '',
   telInst: '',
