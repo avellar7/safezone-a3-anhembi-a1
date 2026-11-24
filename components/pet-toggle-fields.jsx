@@ -35,6 +35,17 @@ export function PetToggleFields({ id = 'pets', value, onChange, label = 'Estou c
               onChange={(e) => set('especie', e.target.value)}
             />
           </div>
+          {value.especie === 'outro' && (
+            <TextField
+              id={`${id}-especie-outro`}
+              label="Qual é o seu pet?"
+              placeholder="Ex.: furão, calopsita, mini porco"
+              autoComplete="off"
+              maxLength={40}
+              value={value.especieOutro ?? ''}
+              onChange={(e) => set('especieOutro', e.target.value)}
+            />
+          )}
           <Segmented legend="Porte" name={`${id}-porte`} value={value.porte} onChange={(v) => set('porte', v)} options={portesPet} />
           <PetPhotoField id={`${id}-foto`} foto={value.foto} onChange={(v) => set('foto', v)} />
         </div>
@@ -128,7 +139,10 @@ function PetPhotoField({ id, foto, onChange }) {
 
 export function resumoPets(pets) {
   if (!pets?.ativo) return null
-  const especie = especiesPet.find((e) => e.value === pets.especie)?.label ?? ''
+  const especie =
+    pets.especie === 'outro' && pets.especieOutro?.trim()
+      ? pets.especieOutro.trim()
+      : (especiesPet.find((e) => e.value === pets.especie)?.label ?? '')
   const porte = portesPet.find((p) => p.id === pets.porte)?.label.toLowerCase() ?? ''
   return `${pets.quantidade || 1} pet(s): ${especie}, porte ${porte}${pets.foto ? ' · com foto' : ''}`
 }
