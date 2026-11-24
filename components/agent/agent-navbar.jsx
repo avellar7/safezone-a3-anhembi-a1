@@ -1,7 +1,8 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import { Contrast, LogOut, Menu, ShieldCheck, X } from 'lucide-react'
+import { Contrast, LogOut, Menu, X } from 'lucide-react'
+import { SafeZoneLogo } from '@/components/safezone-logo'
 import { cn } from '@/lib/utils'
 import { usePrefs } from '@/lib/prefs-context'
 import { agente, orgao } from '@/lib/agent-data'
@@ -79,13 +80,11 @@ export function AgentNavbar({ view, onNavigate, onLogout }) {
   }
 
   return (
-    <header className="fixed inset-x-0 top-8 z-50 bg-nav text-nav-fg shadow-md">
+    <header className="fixed inset-x-0 top-0 z-50 bg-nav text-nav-fg shadow-md">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-3 px-4 sm:px-6">
         <div className="flex items-center gap-6">
           <button type="button" onClick={() => ir('painel')} className="flex min-h-11 items-center gap-2.5 rounded-lg">
-            <span className="flex size-10 items-center justify-center rounded-full bg-nav-fg text-nav">
-              <ShieldCheck className="size-6" aria-hidden="true" />
-            </span>
+            <SafeZoneLogo />
             <span className="flex flex-col items-start leading-tight">
               <span className="text-xl font-extrabold tracking-tight">SafeZone</span>
               <span className="text-[11px] font-bold uppercase tracking-wider text-nav-fg/80">Agente</span>

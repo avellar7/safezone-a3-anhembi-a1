@@ -12,6 +12,14 @@ export const metadata = {
   title: 'SafeZone — Defesa & Emergência',
   description:
     'Painel de monitoramento de riscos climáticos: alertas de enchentes e deslizamentos, mapa de áreas de risco, abrigos próximos e acompanhamento de pedidos de socorro.',
+  manifest: '/manifest.json',
+  icons: {
+    icon: [
+      { url: '/icon-light-32x32.png', sizes: '32x32', type: 'image/png' },
+      { url: '/icon-192.png', sizes: '192x192', type: 'image/png' },
+    ],
+    apple: '/apple-icon.png',
+  },
 }
 
 export const viewport = {

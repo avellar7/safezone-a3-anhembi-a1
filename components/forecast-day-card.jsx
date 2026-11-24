@@ -1,4 +1,4 @@
-import { Cloud, CloudLightning, CloudRain, CloudRainWind, CloudSun } from 'lucide-react'
+import { Cloud, CloudLightning, CloudRain, CloudRainWind, CloudSun, Umbrella } from 'lucide-react'
 import { AlertBadge } from '@/components/alert-badge'
 import { severidades } from '@/lib/severity'
 import { cn } from '@/lib/utils'
@@ -12,7 +12,7 @@ const icones = {
 }
 
 export function ForecastDayCard({ previsao }) {
-  const { dia, data, condicao, condicaoLabel, risco, rotulo, prob } = previsao
+  const { dia, data, condicao, condicaoLabel, risco, rotulo, prob, elNino } = previsao
   const Icon = icones[condicao]
   const sev = severidades[risco]
 
@@ -32,6 +32,12 @@ export function ForecastDayCard({ previsao }) {
         <p className="text-base font-semibold leading-tight">{condicaoLabel}</p>
       </div>
       <AlertBadge nivel={risco} rotulo={rotulo} className="self-start" />
+      {elNino && (
+        <span className="inline-flex items-center gap-1 self-start rounded-full bg-info-soft px-2 py-0.5 text-xs font-bold text-info-ink">
+          <Umbrella className="size-3.5" aria-hidden="true" />
+          Influência de El Niño
+        </span>
+      )}
       <div>
         <p className="text-3xl font-extrabold">
           {prob}%

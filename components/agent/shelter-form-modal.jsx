@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { Save } from 'lucide-react'
 import { Modal } from '@/components/agent/modal'
 import { TextField } from '@/components/agent/fields'
+import { Switch } from '@/components/form-controls'
 
 export function ShelterFormModal({ abrigo, onSalvar, onFechar }) {
   const editando = Boolean(abrigo)
@@ -12,10 +13,13 @@ export function ShelterFormModal({ abrigo, onSalvar, onFechar }) {
   const [capacidade, setCapacidade] = useState(abrigo ? String(abrigo.capacidade) : '')
   const [vagas, setVagas] = useState(abrigo ? String(abrigo.vagas) : '')
   const [telefone, setTelefone] = useState(abrigo?.telefone ?? '')
+  const [aceitaPets, setAceitaPets] = useState(abrigo?.aceitaPets ?? false)
+  const [capacidadePets, setCapacidadePets] = useState(abrigo?.aceitaPets ? String(abrigo.capacidadePets ?? '') : '')
   const [tentou, setTentou] = useState(false)
 
   const cap = Number(capacidade)
   const vag = Number(vagas)
+  const capPets = Number(capacidadePets)
 
   const erros = {
     nome: nome.trim().length < 3 ? 'Informe o nome do abrigo.' : undefined,
@@ -27,6 +31,10 @@ export function ShelterFormModal({ abrigo, onSalvar, onFechar }) {
         : cap >= 1 && vag > cap
           ? 'As vagas não podem ser maiores que a capacidade.'
           : undefined,
+    capacidadePets:
+      aceitaPets && (capacidadePets === '' || !Number.isInteger(capPets) || capPets < 1)
+        ? 'Informe quantos pets o abrigo comporta.'
+        : undefined,
   }
   const temErro = Object.values(erros).some(Boolean)
 
@@ -43,6 +51,10 @@ export function ShelterFormModal({ abrigo, onSalvar, onFechar }) {
       capacidade: cap,
       vagas: vag,
       telefone: telefone.trim() || 'Não informado',
+      coords: abrigo?.coords,
+      aceitaPets,
+      capacidadePets: aceitaPets ? capPets : 0,
+      vagasPets: aceitaPets ? Math.min(abrigo?.aceitaPets ? (abrigo.vagasPets ?? capPets) : capPets, capPets) : 0,
     })
   }
 
@@ -76,6 +88,25 @@ export function ShelterFormModal({ abrigo, onSalvar, onFechar }) {
             onChange={(e) => setVagas(e.target.value.replace(/\D/g, ''))}
             error={mostrar('vagas')}
           />
+        </div>
+        <div className="flex flex-col gap-3 rounded-xl border-2 border-line bg-bg p-3">
+          <Switch
+            id="abrigo-aceita-pets"
+            label="Aceita pets"
+            hint="Moradores com animais verão este abrigo no filtro."
+            checked={aceitaPets}
+            onChange={setAceitaPets}
+          />
+          {aceitaPets && (
+            <TextField
+              id="abrigo-capacidade-pets"
+              label="Capacidade para pets"
+              inputMode="numeric"
+              value={capacidadePets}
+              onChange={(e) => setCapacidadePets(e.target.value.replace(/\D/g, ''))}
+              error={mostrar('capacidadePets')}
+            />
+          )}
         </div>
         <TextField
           id="abrigo-telefone"

@@ -297,8 +297,47 @@ html[data-font='large'] {
   animation: sos-pulse 2.4s ease-out infinite;
 }
 
+@keyframes sos-ring {
+  0% {
+    transform: scale(1);
+    opacity: 0.55;
+  }
+  100% {
+    transform: scale(1.9);
+    opacity: 0;
+  }
+}
+
+.sos-ring {
+  animation: sos-ring 2s cubic-bezier(0.2, 0.6, 0.4, 1) infinite;
+}
+
+.sos-ring-delay {
+  animation-delay: 1s;
+}
+
+@keyframes sos-menu-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.sos-menu-in {
+  animation: sos-menu-in 160ms ease-out;
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .sos-pulse {
+  .sos-pulse,
+  .sos-ring,
+  .sos-menu-in {
     animation: none;
+  }
+  .sos-ring {
+    opacity: 0;
   }
 }

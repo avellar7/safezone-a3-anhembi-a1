@@ -4,9 +4,12 @@ import { useState } from 'react'
 import { Plus } from 'lucide-react'
 import { ShelterCard } from '@/components/agent/shelter-card'
 import { ShelterFormModal } from '@/components/agent/shelter-form-modal'
+import { PetFilter } from '@/components/shelter-pet-badge'
 
 export function ShelterList({ abrigos, onSalvar }) {
   const [formulario, setFormulario] = useState(null)
+  const [soPets, setSoPets] = useState(false)
+  const visiveis = soPets ? abrigos.filter((a) => a.aceitaPets) : abrigos
 
   const salvar = (abrigo) => {
     onSalvar(abrigo)
@@ -30,8 +33,12 @@ export function ShelterList({ abrigos, onSalvar }) {
         </button>
       </div>
 
+      <PetFilter id="agente-filtro-pets" checked={soPets} onChange={setSoPets} />
+
+      {visiveis.length === 0 && <p className="text-base text-ink2">Nenhum abrigo cadastrado aceita pets.</p>}
+
       <ul className="grid gap-3 md:grid-cols-2">
-        {abrigos.map((a) => (
+        {visiveis.map((a) => (
           <ShelterCard key={a.id} abrigo={a} onEditar={(abrigo) => setFormulario({ abrigo })} />
         ))}
       </ul>

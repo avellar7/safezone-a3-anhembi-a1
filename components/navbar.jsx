@@ -1,7 +1,8 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import { Contrast, LogOut, Menu, Settings2, ShieldCheck, X } from 'lucide-react'
+import { Contrast, LogOut, Menu, Settings2, X } from 'lucide-react'
+import { SafeZoneLogo } from '@/components/safezone-logo'
 import { cn } from '@/lib/utils'
 import { usePrefs } from '@/lib/prefs-context'
 import { usuario } from '@/lib/mock-data'
@@ -91,13 +92,11 @@ export function Navbar({ view, onNavigate, onLogout }) {
   }
 
   return (
-    <header className="fixed inset-x-0 top-8 z-50 bg-nav text-nav-fg shadow-md">
+    <header className="fixed inset-x-0 top-0 z-50 bg-nav text-nav-fg shadow-md">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-3 px-4 sm:px-6">
         <div className="flex items-center gap-6">
           <button type="button" onClick={() => ir('overview')} className="flex min-h-11 items-center gap-2.5 rounded-lg">
-            <span className="flex size-10 items-center justify-center rounded-full bg-nav-fg text-nav">
-              <ShieldCheck className="size-6" aria-hidden="true" />
-            </span>
+            <SafeZoneLogo />
             <span className="text-xl font-extrabold tracking-tight">SafeZone</span>
           </button>
 

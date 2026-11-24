@@ -4,9 +4,10 @@ import { CriticalAlertCard } from '@/components/critical-alert-card'
 import { MetricCard } from '@/components/metric-card'
 import { RiskMap } from '@/components/risk-map'
 import { abrigos, etapasChamado } from '@/lib/mock-data'
+import { googleMapsRotaUrl } from '@/lib/maps'
 import { severidades } from '@/lib/severity'
 
-export function Overview({ alertas, chamado, seguro, onRota, onSeguro, onDesfazerSeguro, onVerChamado }) {
+export function Overview({ alertas, chamado, seguro, onSeguro, onDesfazerSeguro, onVerChamado }) {
   const ativos = alertas.filter((a) => a.status === 'ativo')
   const critico = ativos.find((a) => a.nivel_severidade === 'critico')
   const abrigo = abrigos.find((a) => a.recomendado)
@@ -29,7 +30,6 @@ export function Overview({ alertas, chamado, seguro, onRota, onSeguro, onDesfaze
           alerta={critico}
           abrigo={abrigo}
           seguro={seguro}
-          onRota={onRota}
           onSeguro={onSeguro}
           onDesfazer={onDesfazerSeguro}
         />
@@ -49,6 +49,8 @@ export function Overview({ alertas, chamado, seguro, onRota, onSeguro, onDesfaze
           legenda={`${abrigo.nome} · ${abrigo.distanciaKm.toString().replace('.', ',')} km`}
           Icon={Home}
           tom="seguro"
+          href={googleMapsRotaUrl(abrigo)}
+          acao={`Como chegar até ${abrigo.nome} (abre o Google Maps em nova aba)`}
         />
         <MetricCard
           rotulo="Chamado em andamento"

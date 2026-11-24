@@ -8,7 +8,6 @@ import { HistoryList } from '@/components/agent/history-list'
 import { NewAlertModal } from '@/components/agent/new-alert-modal'
 import { ShelterList } from '@/components/agent/shelter-list'
 import { AIForecastPage } from '@/components/ai-forecast-page'
-import { ConnectionStatusBar } from '@/components/connection-status-bar'
 import {
   abrigosAgenteIniciais,
   alertasAgenteIniciais,
@@ -74,10 +73,9 @@ export function AgentApp({ onLogout }) {
 
   return (
     <div className="min-h-screen bg-bg text-ink">
-      <ConnectionStatusBar />
       <AgentNavbar view={view} onNavigate={navegar} onLogout={onLogout} />
 
-      <main className="mx-auto max-w-6xl px-4 pb-16 pt-28 sm:px-6">
+      <main className="mx-auto max-w-6xl px-4 pb-16 pt-20 sm:px-6">
         <p role="status" aria-live="polite" className={aviso ? 'mb-4 rounded-xl border-2 border-safe bg-safe-soft px-4 py-3 text-base font-bold text-safe-ink' : 'sr-only'}>
           {aviso}
         </p>

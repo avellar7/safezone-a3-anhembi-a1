@@ -1,5 +1,6 @@
 import { CircleAlert, Pencil } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { resumoPets } from '@/components/pet-toggle-fields'
 
 function Bloco({ titulo, passo, onEditar, linhas }) {
   return (
@@ -67,6 +68,7 @@ export function StepReview({ form, onEditar }) {
                 ['Rua e número', d.logradouro],
                 ['Bairro', d.bairro],
                 ['CEP', d.cep],
+                ['Pets', resumoPets(d.pets) ?? 'Nenhum'],
               ]
         }
       />

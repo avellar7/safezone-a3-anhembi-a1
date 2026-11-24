@@ -7,6 +7,7 @@ import { StepProfile } from '@/components/signup/step-profile'
 import { StepAccount } from '@/components/signup/step-account'
 import { StepLocation } from '@/components/signup/step-location'
 import { StepReview } from '@/components/signup/step-review'
+import { petsVazio } from '@/lib/mock-data'
 import { cnpjValido, cpfValido, emailValido, maskCep, maskCpf, maskTelefone, onlyDigits, telefoneValido } from '@/lib/masks'
 
 const dadosIniciais = {
@@ -21,6 +22,7 @@ const dadosIniciais = {
   bairro: '',
   cep: '',
   usouGps: false,
+  pets: petsVazio,
   orgao: '',
   cnpj: '',
   telInst: '',
@@ -163,7 +165,7 @@ export function SignupFlow({ onFinish, onVoltarLogin }) {
   }
 
   return (
-    <div ref={topo} className="mx-auto max-w-xl scroll-mt-28">
+    <div ref={topo} className="mx-auto max-w-xl scroll-mt-20">
       <h1 className="mb-4 text-3xl font-extrabold">Criar conta</h1>
       <Progresso passo={passo} />
 

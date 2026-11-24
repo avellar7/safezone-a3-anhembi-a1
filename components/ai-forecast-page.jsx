@@ -1,5 +1,7 @@
 import { Megaphone, MapPin, Sparkles } from 'lucide-react'
+import { ElNinoContextCard } from '@/components/el-nino-context-card'
 import { ForecastDayCard } from '@/components/forecast-day-card'
+import { fenomenoClimatico } from '@/lib/mock-data'
 import { alertaPreventivoSugerido, analiseIA, orgao, previsaoIA } from '@/lib/agent-data'
 
 export function AIForecastPage({ perfil = 'morador', onEmitirPreventivo }) {
@@ -15,6 +17,8 @@ export function AIForecastPage({ perfil = 'morador', onEmitirPreventivo }) {
           {localizacao}
         </p>
       </div>
+
+      <ElNinoContextCard fenomeno={fenomenoClimatico} />
 
       <ol aria-label="Previsão diária" className="-mx-4 flex snap-x gap-3 overflow-x-auto px-4 pb-2 sm:mx-0 sm:px-0 lg:grid lg:grid-cols-5 lg:overflow-visible">
         {previsaoIA.map((p) => (

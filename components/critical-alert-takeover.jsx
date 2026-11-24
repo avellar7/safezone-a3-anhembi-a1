@@ -2,6 +2,8 @@
 
 import { useEffect, useRef } from 'react'
 import { MapPin, OctagonAlert, Route, ShieldCheck } from 'lucide-react'
+import { MapsRedirectButton } from '@/components/maps-redirect-button'
+import { areaRiscoCoords } from '@/lib/mock-data'
 import { usePrefs } from '@/lib/prefs-context'
 
 export function CriticalAlertTakeover({ alerta, abrigo, onRota, onSeguro, onFechar }) {
@@ -58,15 +60,16 @@ export function CriticalAlertTakeover({ alerta, abrigo, onRota, onSeguro, onFech
         )}
 
         <div className="flex w-full flex-col gap-3">
-          <button
-            ref={botaoPrincipal}
-            type="button"
+          <MapsRedirectButton
+            anchorRef={botaoPrincipal}
+            variante="claro"
+            Icon={Route}
+            coords={abrigo?.coords ?? areaRiscoCoords}
+            destinoNome={abrigo?.nome}
             onClick={onRota}
-            className="flex min-h-16 items-center justify-center gap-3 rounded-2xl bg-white px-6 text-xl font-extrabold text-[#7F1D1D]"
           >
-            <Route className="size-6" aria-hidden="true" />
             {t('take.route')}
-          </button>
+          </MapsRedirectButton>
           <button
             type="button"
             onClick={onSeguro}
