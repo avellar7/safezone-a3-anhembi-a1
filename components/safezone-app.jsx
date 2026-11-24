@@ -2,7 +2,6 @@
 
 import { useCallback, useState } from 'react'
 import { ClaimPage } from '@/components/claim-page'
-import { ConnectionStatusBar } from '@/components/connection-status-bar'
 import { CriticalAlertTakeover } from '@/components/critical-alert-takeover'
 import { AgentApp } from '@/components/agent/agent-app'
 import { AIForecastPage } from '@/components/ai-forecast-page'
@@ -59,10 +58,9 @@ function Dashboard({ onLogout }) {
 
   return (
     <div className="min-h-screen bg-bg text-ink">
-      <ConnectionStatusBar />
       <Navbar view={view} onNavigate={navegar} onLogout={onLogout} />
 
-      <main className="mx-auto max-w-6xl px-4 pb-32 pt-28 sm:px-6">
+      <main className="mx-auto max-w-6xl px-4 pb-32 pt-20 sm:px-6">
         {view === 'overview' && (
           <Overview
             alertas={alertas}

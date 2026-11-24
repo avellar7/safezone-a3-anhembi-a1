@@ -80,7 +80,7 @@ export function AgentNavbar({ view, onNavigate, onLogout }) {
   }
 
   return (
-    <header className="fixed inset-x-0 top-8 z-50 bg-nav text-nav-fg shadow-md">
+    <header className="fixed inset-x-0 top-0 z-50 bg-nav text-nav-fg shadow-md">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-3 px-4 sm:px-6">
         <div className="flex items-center gap-6">
           <button type="button" onClick={() => ir('painel')} className="flex min-h-11 items-center gap-2.5 rounded-lg">

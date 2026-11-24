@@ -165,7 +165,7 @@ export function SignupFlow({ onFinish, onVoltarLogin }) {
   }
 
   return (
-    <div ref={topo} className="mx-auto max-w-xl scroll-mt-28">
+    <div ref={topo} className="mx-auto max-w-xl scroll-mt-20">
       <h1 className="mb-4 text-3xl font-extrabold">Criar conta</h1>
       <Progresso passo={passo} />
 
