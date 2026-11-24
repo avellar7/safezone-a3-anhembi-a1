@@ -1,7 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import { Contrast, Eye, EyeOff, LogIn, ShieldCheck } from 'lucide-react'
+import { Contrast, Eye, EyeOff, LogIn } from 'lucide-react'
+import { SafeZoneLogo } from '@/components/safezone-logo'
 import { Segmented } from '@/components/form-controls'
 import { FloatingField } from '@/components/signup/floating-field'
 import { emailValido } from '@/lib/masks'
@@ -68,9 +69,7 @@ export function LoginScreen({ onLogin, onCriarConta }) {
       <header className="bg-nav text-nav-fg shadow-md">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-2.5 px-4 sm:px-6">
           <div className="flex items-center gap-2.5">
-            <span className="flex size-10 items-center justify-center rounded-full bg-nav-fg text-nav">
-              <ShieldCheck className="size-6" aria-hidden="true" />
-            </span>
+            <SafeZoneLogo />
             <span className="text-xl font-extrabold tracking-tight">SafeZone</span>
           </div>
           <button
